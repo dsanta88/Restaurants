@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-export default function TopRestaurants() {
+export default function TopRestaurantsStack() {
     return (
         <View>
             <Text>Top Restautantes</Text>
