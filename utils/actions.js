@@ -9,9 +9,9 @@ export const  isUserLogged=()=>{
     firebaseApp.auth().onAuthStateChanged((user)=>{
       user!==null && (isLogged=true)
 
-    })
+    }) 
+}
 
-
-
-    
+export const getCurrentUser= ()=>{
+  return firebase.auth().currentUser
 }
