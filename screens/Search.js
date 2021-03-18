@@ -1,10 +1,10 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-export default function TopRestaurantsStack() {
+export default function Search() {
     return (
         <View>
-            <Text>Top Restautantes</Text>
+            <Text>Buscar</Text>
         </View>
     )
 }
