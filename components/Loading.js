@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
        borderRadius: 10
    },
    view:{  
-       flex:1,
        alignItems:"center",
        justifyContent: "center"
    },
