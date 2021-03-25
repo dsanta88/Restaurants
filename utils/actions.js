@@ -75,6 +75,7 @@ export const uploadImage=async(image,path,name)=>{
 
 export const updateProfile=async(data)=>{
    const result={statusResponse:true, error:null }
+
    try{
       await firebase.auth().currentUser.updateProfile(data)
    }
@@ -82,9 +83,36 @@ export const updateProfile=async(data)=>{
      result.statusResponse=false
      result.error=error
    }
-   console.log(result)
    return result
 }
 
 
 
+export const reauthenticate=async(password)=>{
+  const result={statusResponse:true, error:null }
+  const user=getCurrentUser()
+
+  const credentiales=firebase.auth.EmailAuthProvider.credential(user.email,password)
+
+  try{
+     await  user.reauthenticateWithCredential(credentiales)
+  }
+  catch(error){
+    result.statusResponse=false
+    result.error=error
+  }
+  return result
+}
+
+
+export const updateEmail=async(email)=>{
+  const result={statusResponse:true, error:null }
+  try{
+     await firebase.auth().currentUser.updateEmail(email)
+  }
+  catch(error){
+    result.statusResponse=false
+    result.error=error
+  }
+  return result
+}
