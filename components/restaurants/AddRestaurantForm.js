@@ -26,8 +26,7 @@ export default function AddRestaurantForm({toastRef, setLoading, navigation}) {
 
 
 const addRestaurants=()=>{
-    console.log(formData)
-    console.log("VAMOS BIEN..")
+
 }
     return (
         <ScrollView style={styles.viewContainer}>
@@ -43,6 +42,7 @@ const addRestaurants=()=>{
                errorAddress={errorAddress}
                errorPhone={errorPhone}
                setIsVisibleMap={setIsVisibleMap}
+               locationRestaurant={locationRestaurant}
             />
             <UploadImage
                toastRef={toastRef}
@@ -67,36 +67,42 @@ const addRestaurants=()=>{
 
 function MapRestaurant({isVisibleMap,setIsVisibleMap,locationRestaurant, setLocationRestaurant,toastRef}){
 
+const [newRegion,setNewRegion] = useState(null)
+
  useEffect(()=>{
    (async()=>{
       const response=await getCurrentLocation()
       if(response.status){
-        setLocationRestaurant(response.location)
+        setNewRegion(response.location)
       }
    })()
  },[]) 
  
 
-  
+  const confirmLocation=()=>{
+    setLocationRestaurant(newRegion)
+    toastRef.current.show("Localización guardada correctamente.", 3000)
+    setIsVisibleMap(false)
+  }
  return(
 
      <Modal isVisible={isVisibleMap} setVisible={setIsVisibleMap}>
         <View>
            {
-               locationRestaurant &&(
+               newRegion &&(
                    <MapView
                     style={styles.mapStyle}
-                    initialRegion={locationRestaurant}
+                    initialRegion={newRegion}
                     showsUserLocation={true}
+                    onRegionChange={(region)=>setNewRegion(region)}
                    >
                        <MapView.Marker
                          coordinate={{
-                            latitude:locationRestaurant.latitude,
-                            longitude: locationRestaurant.longitude
+                            latitude:newRegion.latitude,
+                            longitude: newRegion.longitude
                          }}
                          draggable
-                       />
-                       
+                       />   
                    </MapView>
                )
            }
@@ -105,11 +111,13 @@ function MapRestaurant({isVisibleMap,setIsVisibleMap,locationRestaurant, setLoca
                 title="Guardar Ubicación"
                  containerStyle={styles.viewMapBtnContainerSave}
                  buttonStyle={styles.viewMapBtnSave}
+                 onPress={confirmLocation}
               />
                   <Button 
                 title="Cancelar Ubicación"
                  containerStyle={styles.viewMapBtnContainerCancel}
                  buttonStyle={styles.viewMapBtnCancel}
+                 onPress={()=>setIsVisibleMap(false)}
               />
            </View>
         </View>
@@ -200,15 +208,26 @@ const removeImage=(image)=>{
     )
 }
 
-function FormAdd({formData,setFormData,errorName,errorDescription,errorEmail,errorAddress,errorPhone,setIsVisibleMap}){
-  const [country, setCountry] = useState("CO")
-  const [callingCode, setCallingCode] = useState("57")
-  const [phone, setPhone] = useState("")
+function FormAdd({
+    formData,
+    setFormData,
+    errorName,
+    errorDescription,
+    errorEmail,
+    errorAddress,
+    errorPhone,
+    setIsVisibleMap,
+    locationRestaurant
+   }){
 
-  const onChange=(e,type)=>{
+   const [country, setCountry] = useState("CO")
+   const [callingCode, setCallingCode] = useState("57")
+   const [phone, setPhone] = useState("")
+
+   const onChange=(e,type)=>{
      setFormData(
          {...formData,[type]:e.nativeEvent.text})
-  }
+   }
 
   return(
       <View style={styles.viewForm}>
@@ -226,7 +245,7 @@ function FormAdd({formData,setFormData,errorName,errorDescription,errorEmail,err
             rightIcon={{
                 type:"material-community",
                 name:"google-maps",
-                color:"#c2c2c2",
+                color: locationRestaurant ? "#442484" : "#c2c2c2",
                 onPress:()=>setIsVisibleMap(true)
             }}   
          />
