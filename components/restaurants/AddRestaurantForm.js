@@ -3,9 +3,9 @@ import { StyleSheet, Text, View, Alert, Dimensions } from 'react-native'
 import {Avatar, Input,Button, Icon, Image} from 'react-native-elements'
 import CountryPicker from 'react-native-country-picker-modal'
 import { ScrollView } from 'react-native-gesture-handler'
-import {map,size,filter} from 'lodash'
+import {map,size,filter, isEmpty} from 'lodash'
 
-import { loadImageFromGallery,getCurrentLocation } from '../../utils/helpers'
+import { loadImageFromGallery,getCurrentLocation, validateEmail } from '../../utils/helpers'
 import  Modal  from '../../components/Modal'
 import MapView from 'react-native-maps'
 
@@ -26,7 +26,59 @@ export default function AddRestaurantForm({toastRef, setLoading, navigation}) {
 
 
 const addRestaurants=()=>{
+ if(!validForm()){
+   return
+ }
 
+
+}
+
+const validForm=()=>{
+   clearError()
+   let isValid=true
+
+   if(isEmpty(formData.name)){
+       setErrorName("Dedes ingresar el nombre del retaurante")
+       isValid=false
+   }
+
+   if(isEmpty(formData.address)){
+     setErrorAddress("Dedes ingresar la dirección del retaurante")
+     isValid=false
+   }
+
+   if(!validateEmail(formData.email)){
+    setErrorEmail("Dedes ingresar un email de restaurante valido.")
+    isValid=false
+   }
+
+   if(size(formData.phone)<10){
+    setErrorPhone("Dedes ingresar un teléfono del retaurante valido.")
+    isValid=false
+   }
+
+   if(isEmpty(formData.description)){
+    setErrorDescription("Dedes ingresar una descripción del retaurante")
+    isValid=false
+  }
+
+  if(!locationRestaurant){
+      toastRef.current.show("Debes de localizar el restaurante en el mapa.", 3000)
+      isValid=false
+  }else if(size(imagesSelected)===0){
+    toastRef.current.show("Debes agregar al menos una imagen al restaurante.", 3000)
+    isValid=false
+  }
+
+   return isValid
+}
+
+const clearError=()=>{
+    setErrorName(null)
+    setErrorEmail(null)
+    setErrorPhone(null)
+    setErrorAddress(null)
+    setErrorDescription(null)
 }
     return (
         <ScrollView style={styles.viewContainer}>
@@ -57,7 +109,6 @@ const addRestaurants=()=>{
             <MapRestaurant
               isVisibleMap={isVisibleMap}
               setIsVisibleMap={setIsVisibleMap}
-              locationRestaurant={locationRestaurant}
               setLocationRestaurant={setLocationRestaurant}
               toastRef={toastRef}
             />
@@ -65,7 +116,7 @@ const addRestaurants=()=>{
     )
 }
 
-function MapRestaurant({isVisibleMap,setIsVisibleMap,locationRestaurant, setLocationRestaurant,toastRef}){
+function MapRestaurant({isVisibleMap,setIsVisibleMap,setLocationRestaurant,toastRef}){
 
 const [newRegion,setNewRegion] = useState(null)
 
