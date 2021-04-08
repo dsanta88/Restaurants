@@ -109,9 +109,13 @@ const menuOptions=generateOptions()
     ))
   }
   
-  <Modal isVisible={showModal} setVisible={setShowModal} chidren={renderComponent}> 
- 
+
+  <Modal isVisible={showModal} setVisible={setShowModal}>
+                {
+                    renderComponent
+                }
   </Modal>
+
 </View>
     )
 }

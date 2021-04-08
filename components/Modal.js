@@ -1,9 +1,8 @@
-import React, { Children } from 'react'
+import React from 'react'
 import { StyleSheet } from 'react-native'
 import { Overlay } from 'react-native-elements'
 
-export default function Modal({isVisible, setVisible,chidren}) {
-
+export default function Modal({ isVisible, setVisible, children  }) {
     return (
        <Overlay
        isVisible={isVisible}
@@ -11,7 +10,7 @@ export default function Modal({isVisible, setVisible,chidren}) {
        onBackdropPress={()=>setVisible(false)}
        >
         {
-            chidren
+            children 
         }
        </Overlay>
     )
