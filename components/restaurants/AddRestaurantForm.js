@@ -8,6 +8,8 @@ import {map,size,filter, isEmpty} from 'lodash'
 import { loadImageFromGallery,getCurrentLocation, validateEmail } from '../../utils/helpers'
 import  Modal  from '../../components/Modal'
 import MapView from 'react-native-maps'
+import {uploadImage, addDocumentWithoutId, getCurrentUser} from '../../utils/actions'
+import uuid from 'random-uuid-v4'
 
 const widthScreen=Dimensions.get("window").width
 
@@ -25,12 +27,54 @@ export default function AddRestaurantForm({toastRef, setLoading, navigation}) {
  const [locationRestaurant, setLocationRestaurant] = useState(null)
 
 
-const addRestaurants=()=>{
+const addRestaurants=async()=>{
  if(!validForm()){
    return
  }
 
+  setLoading(true)
+  const responseUploadImages=await uploadImages()
+  const restaurant={
+      name: formData.name,
+      address:formData.address,
+      email:formData.email,
+      description:formData.description,
+      callingCode:formData.callingCode,
+      phone:formData.phone,
+      location: locationRestaurant,
+      images:responseUploadImages,
+      rating:0,
+      ratingTotal:0,
+      quantityVoting:0,
+      createAt: new Date(),
+      createBy: getCurrentUser().uid
+  }
 
+  const responseAddDocument=await addDocumentWithoutId("restaurants",restaurant)
+  console.log(responseAddDocument)
+  setLoading(false)
+  
+  if(!responseAddDocument.statusResponse){
+      toastRef.current.show("Error al grabar el restaurante, por favor intenta mas tarde. ",6000)
+      return
+  }
+
+  navigation.navigate("restaurants")
+}
+
+const uploadImages=async()=>{
+  const imagesUrl= []
+  await Promise.all(
+     map(imagesSelected,async(image)=>{
+        console.log(image)
+         const response=await uploadImage(image,"restaurants",uuid())
+       
+         if(response.statusResponse){
+           imagesUrl.push(response.url)
+         }
+     })
+  )
+  return imagesUrl
 }
 
 const validForm=()=>{
