@@ -17,12 +17,19 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier":"com.santa.restaurants"
     },
     "android": {
+      "package":"com.santa.restaurants",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
+      },
+      "config":{
+        "googleMaps":{
+           "apiKey":"AIzaSyCpU46qTRUVN8N_yFyBvNn6foTU-0kyIaU"
+        }
       },
       "permissions":[
         "CAMERA_ROLL",

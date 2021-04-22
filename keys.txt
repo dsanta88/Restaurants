@@ -1,0 +1,7 @@
+AIzaSyCpU46qTRUVN8N_yFyBvNn6foTU-0kyIaU
+Google Certificate Fingerprint:     01:0C:22:E1:B9:3F:6D:CA:A2:2E:57:7A:34:67:90:C4:8C:0B:02:7E
+Google Certificate Hash (SHA-1):    010C22E1B93F6DCAA22E577A346790C48C0B027E
+Google Certificate Hash (SHA-256):  F6B1F5AA5CD51C0213382C07C5077D54FE982044D8447F7CFF8B356BAE4B8680
+Facebook Key Hash:                  AQwi4bk/bcqiLld6NGeQxIwLAn4=
+
+https://expo.io/accounts/dsanta/builds/0909665b-f3f3-4746-a032-9b2851942cb4
