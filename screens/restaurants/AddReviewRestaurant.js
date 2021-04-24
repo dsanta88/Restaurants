@@ -32,6 +32,7 @@ export default function AddReviewRestaurant({navigation,route}) {
             avatarUser:user.photoURL,
             idRestaurant:idRestaurant,
             title:title,
+            review:review,
             rating:rating,
             createAt:new Date()
         }
