@@ -1,12 +1,16 @@
 import React,{useState,useEffect} from 'react'
 import { Dimensions, Alert,StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import {Rating} from 'react-native-elements'
-
+import {Rating,ListItem,Icon} from 'react-native-elements'
+import { map } from 'lodash'
 
 import { getDocumentById } from '../../utils/actions'
 import Loading from '../../components/Loading'
 import  CarouselImages  from '../../components/CarouselImages'
+import { formatPhone } from '../../utils/helpers'
+import MapRestaurant from '../../components/restaurants/MapRestaurant'
+
+
 
 
 const widthScreen=Dimensions.get("window").width
@@ -51,6 +55,13 @@ export default function Restaurant({navigation,route}) {
                description={restaurant.description}
                rating={restaurant.rating}
             />
+            <RestaurantInfo
+               name={restaurant.name}
+               location={restaurant.location}
+               address={restaurant.address}
+               email={restaurant.email}
+               phone={formatPhone(restaurant.callingCode, restaurant.phone)}
+            />
         </ScrollView>
     )
 }
@@ -69,6 +80,44 @@ function TitleRestaurant({name,description,rating}){
             <Text style={styles.descriptionRestaurant}>{description}</Text>
          </View>
      )
+}
+
+function RestaurantInfo({name,location,address,email,phone}){
+  const listInfo=[
+      { text: address,iconName:"map-marker"},
+      { text: phone,iconName:"phone"},
+      { text: email,iconName:"at"}
+  ] 
+
+  return(
+      <View style={styles.viewRestaurantInfo}>
+          <Text style={styles.restaurantInfoTitle}>
+              Información sobre el restaurante
+          </Text>
+          <MapRestaurant 
+            location={location}
+            name={name}
+            height={150}
+          />
+          {
+              map(listInfo,(item,index)=>(
+               <ListItem
+                    key={index}
+                    style={styles.containerListItem}
+                   >
+                   <Icon
+                     type="material-community"
+                      name={item.iconName}
+                      color="#442484"
+                   />
+                   <ListItem.Content>
+                       <ListItem.Title>{item.text}</ListItem.Title>
+                   </ListItem.Content>
+                </ListItem>
+              ))
+          }
+      </View>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -93,6 +142,19 @@ const styles = StyleSheet.create({
     },
     nameRestaurant:{
         fontWeight:'bold'
+    },
+    viewRestaurantInfo:{
+        margin:15,
+        marginTop:25
+    },
+    restaurantInfoTitle:{
+        fontSize: 20,
+        fontWeight:"bold",
+        marginBottom:15
+    },
+    containerListItem:{
+       borderBottomColor:"#a376c7",
+       borderBottomWidth: 1
     }
 
 })

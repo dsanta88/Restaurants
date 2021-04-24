@@ -28,7 +28,7 @@ export default function Restaurants({navigation}) {
 
     useFocusEffect(
       useCallback(() => {
-          async function fetchData() {
+          async function getdata() {
 
               setLoading(true)
               const response = await getRestaurants(limitRestaurants)
@@ -39,7 +39,7 @@ export default function Restaurants({navigation}) {
               }
               setLoading(false)
           }
-          fetchData()
+          getdata()
       }, [])
   )
 
