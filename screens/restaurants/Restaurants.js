@@ -5,7 +5,7 @@ import { Icon } from 'react-native-elements'
 import { useFocusEffect} from "@react-navigation/native"
 import firebase from 'firebase/app'
 
-import {getRestaurants} from '../../utils/actions'
+import {getRestaurants,getMoreRestaurants} from '../../utils/actions'
 import ListRestaurants from '../../components/restaurants/ListRestaurants'
 import Loading from '../../components/Loading'
 
@@ -43,6 +43,20 @@ export default function Restaurants({navigation}) {
       }, [])
   )
 
+  const handerLoadMore= async()=>{
+    if(!startRestaurant){
+      return
+    }
+
+    setLoading(true)
+    const response = await getMoreRestaurants(limitRestaurants,startRestaurant)
+              
+     if(response.statusResponse) {
+         setStartRestaurant(response.startRestaurant)
+         setRestaurants(...restaurants,... response.restaurants)
+     }
+    setLoading(false)
+  }
 
     if(user === null) {
         return <Loading isVisible={true} text="Carando..."/>
@@ -55,6 +69,7 @@ export default function Restaurants({navigation}) {
                 <ListRestaurants
                    restaurants={restaurants}
                    navigation={navigation}
+                   handerLoadMore={handerLoadMore}
                 />
                ):(
                   <View style={styles.notFoundView}>

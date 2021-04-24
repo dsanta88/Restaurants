@@ -1,14 +1,19 @@
 import React from 'react'
+
 import { FlatList,StyleSheet, Text, View,TouchableOpacity,ActivityIndicator } from 'react-native'
 import {Image} from "react-native-elements"
 import { size } from 'lodash'
+import {formatPhone} from '../../utils/helpers'
+import { getMoreRestaurants } from '../../utils/actions'
 
-export default function ListRestaurants({restaurants,navigation}) {
+export default function ListRestaurants({restaurants,navigation,handerLoadMore}) {
     return (
         <View>
             <FlatList
                data={restaurants}
                keyExtractor={(item,index)=>index.toString()}
+               onEndReachedThreshold={0.5}
+               onEndReached={handerLoadMore}
                renderItem={(restaurant)=>(
                    <Restaurant  restaurant={restaurant} navigation={navigation}/>
                )}
@@ -17,14 +22,18 @@ export default function ListRestaurants({restaurants,navigation}) {
     )
 }
 
-function Restaurant({restaurant,navigation}){
+function Restaurant({restaurant,navigation,handerLoadMore}){
  
-    console.log("RESTAURANTE:",restaurant)
  const {id,images,name,address, description,phone,callingCode}=restaurant.item
  const imageRestaurant=images[0]
 
+ const getRestaurant=()=>{
+    navigation.navigate("restaurant",{id,name})
+ }
+
+
  return(
-     <TouchableOpacity>
+     <TouchableOpacity onPress={getRestaurant}>
        <View style={styles.viewRestaurant}>
            <View style={styles.viewRestaurantImage}>
             <Image
@@ -37,7 +46,7 @@ function Restaurant({restaurant,navigation}){
        <View>
            <Text style={styles.restaurantTitle}>{name}</Text>
            <Text style={styles.restaurantInformation}>{address}</Text>
-           <Text style={styles.restaurantInformation}>+{callingCode}-{phone}</Text>
+           <Text style={styles.restaurantInformation}>{formatPhone(callingCode,phone)}</Text>
            <Text style={styles.restaurantDescription}>
                {
                   size(description)>0
@@ -73,7 +82,7 @@ const styles = StyleSheet.create({
      restaurantDescription:{
         paddingTop:2,
         color:"grey",
-        width:"75%" 
+        width:"100%" 
      }
    
 

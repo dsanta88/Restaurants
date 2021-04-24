@@ -40,7 +40,6 @@ export const registerUser=async(email,password)=>{
   return result
 }
 
-
 export const loginWithEmailAndPassword=async(email,password)=>{
   const result={statusResponse:true, error:null}
   try{
@@ -52,7 +51,6 @@ export const loginWithEmailAndPassword=async(email,password)=>{
   }
   return result
 }
-
 
 export const uploadImage=async(image,path,name)=>{
 
@@ -73,7 +71,6 @@ export const uploadImage=async(image,path,name)=>{
     return result
 }
 
-
 export const updateProfile=async(data)=>{
    const result={statusResponse:true, error:null }
 
@@ -86,7 +83,6 @@ export const updateProfile=async(data)=>{
    }
    return result
 }
-
 
 
 export const reauthenticate=async(password)=>{
@@ -105,7 +101,6 @@ export const reauthenticate=async(password)=>{
 
   return result
 }
-
 
 export const updateEmail=async(email)=>{
   const result={statusResponse:true, error:null }
@@ -134,7 +129,6 @@ export const updatePassword=async(password)=>{
   return result
 }
 
-
 export const addDocumentWithoutId=async(collection,data)=>{
   const result={statusResponse:true, error:null }
 
@@ -149,13 +143,16 @@ export const addDocumentWithoutId=async(collection,data)=>{
   return result
 }
 
-
 export const getRestaurants= async(limitRestaurants) =>{
 
   const result={statusResponse:true, error:null, restaurants:[], startRestaurant:null }
 
   try{
-     const response=await db.collection("restaurants").orderBy("createAt","desc").limit(limitRestaurants).get()
+     const response=await db
+     .collection("restaurants")
+     .orderBy("createAt","desc")
+     .limit(limitRestaurants)
+     .get()
      if(response.docs.length>0){
        result.startRestaurant=response.docs[response.docs.length-1]
      }
@@ -172,3 +169,46 @@ export const getRestaurants= async(limitRestaurants) =>{
   return result
 }
 
+export const getMoreRestaurants= async(limitRestaurants,startRestaurant) =>{
+
+  const result={statusResponse:true, error:null, restaurants:[], startRestaurant:null }
+
+  try{
+     const response=await db
+     .collection("restaurants")
+     .orderBy("createAt","desc")
+     .startAfter(startRestaurant.data().createAt)
+     .limit(limitRestaurants)
+     .get()
+     if(response.docs.length>0){
+       result.startRestaurant=response.docs[response.docs.length-1]
+     }
+     response.forEach((doc)=>{
+       const restaurant=doc.data()
+       restaurant.id=doc.id
+       result.restaurants.push(restaurant)
+     })
+  }
+  catch(error){
+    result.statusResponse=false
+    result.error=error
+  }
+  return result
+}
+
+export const getDocumentById=async(collection,id)=>{
+  const result={statusResponse:true, error:null, document:null }
+  try{
+    const response  =await db.collection(collection).doc(id).get()
+    result.document=response.data()
+    result.document.id=response.id
+  }
+  catch(error){
+    result.statusResponse=false
+    result.error=error
+  }
+
+
+  console.log("RESULTADO:",result)
+  return result
+}
