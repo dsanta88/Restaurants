@@ -4,12 +4,12 @@ import { ScrollView } from 'react-native-gesture-handler'
 import {Rating,ListItem,Icon} from 'react-native-elements'
 import { map } from 'lodash'
 
-import { getDocumentById } from '../../utils/actions'
 import Loading from '../../components/Loading'
-import  CarouselImages  from '../../components/CarouselImages'
-import { formatPhone } from '../../utils/helpers'
+import CarouselImages  from '../../components/CarouselImages'
 import MapRestaurant from '../../components/restaurants/MapRestaurant'
-
+import ListReviews from '../../components/restaurants/ListReviews'
+import { formatPhone } from '../../utils/helpers'
+import { getDocumentById } from '../../utils/actions'
 
 
 
@@ -62,6 +62,10 @@ export default function Restaurant({navigation,route}) {
                email={restaurant.email}
                phone={formatPhone(restaurant.callingCode, restaurant.phone)}
             />
+           <ListReviews
+             navigation={navigation}
+             idRestaurant={restaurant.id}
+           />
         </ScrollView>
     )
 }
