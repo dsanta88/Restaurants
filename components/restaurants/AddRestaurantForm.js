@@ -51,7 +51,6 @@ const addRestaurants=async()=>{
   }
 
   const responseAddDocument=await addDocumentWithoutId("restaurants",restaurant)
-  console.log(responseAddDocument)
   setLoading(false)
   
   if(!responseAddDocument.statusResponse){

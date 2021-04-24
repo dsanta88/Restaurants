@@ -76,8 +76,7 @@ export default function ListReviews({navigation,idRestaurant}) {
 function Review({reviewDocument}){
   const {title,review,createAt,avatarUser,rating}=reviewDocument
   const createReview=new Date(createAt.seconds*1000)
-  
-  console.log("FOTO",avatarUser)
+
   return(
       <View style={styles.viewReview}>
            <View style={styles.imageAvatar}>

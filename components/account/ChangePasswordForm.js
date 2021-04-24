@@ -29,7 +29,6 @@ export default function ChangePasswordForm({setShowModal,toastRef}) {
          return
      }
 
-     console.log(newPassword)
      const resultUpdatePassword=await updatePassword(newPassword)
      setLoading(false)
 
