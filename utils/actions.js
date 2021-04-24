@@ -208,7 +208,17 @@ export const getDocumentById=async(collection,id)=>{
     result.error=error
   }
 
+  return result
+}
 
-  console.log("RESULTADO:",result)
+export const updateDocument=async(collection,id,data)=>{
+  const result={statusResponse:true, error:null}
+  try{
+    await db.collection(collection).doc(id).update(data)
+  }
+  catch(error){
+    result.statusResponse=false
+    result.error=error
+  }
   return result
 }
