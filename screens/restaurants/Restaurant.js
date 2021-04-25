@@ -186,7 +186,13 @@ function RestaurantInfo({name,location,address,email,phone,currentUser}){
   }
 
   const actionRight=(type)=>{
-    console.log("DERECHA",type)
+    if(type=="phone"){
+      if(currentUser){
+        sendWhatsApp(phone,`Soy ${currentUser.displayName}, estoy interesado en sus servicios.`)
+       }else{
+        sendWhatsApp(phone,"Estoy interesado en sus servicios.")
+       }
+     }
   }
 
 
