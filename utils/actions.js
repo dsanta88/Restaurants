@@ -2,10 +2,11 @@ import {firebaseApp} from './firebase'
 import * as firebase from 'firebase'
 import 'firebase/firestore'
 import { fileToBlob } from './helpers'
-import { cloneElement } from 'react'
 import { map } from 'lodash'
+import {FireSQL} from 'firesql'
 
 const db= firebase.firestore(firebaseApp)
+const fireSQL=new FireSQL(firebase.firestore(),{includeId:"id"})
 
 export const  isUserLogged=()=>{
     let isLogged=false
@@ -299,17 +300,12 @@ export const getFavorites=async()=>{
     .where("idUser","==",getCurrentUser().uid)
     .get()
 
-    const restaurantId=[]
-    response.forEach((doc)=>{
-       const favorite=doc.data()
-       restaurantId.push(favorite.idRestaurant)
-    })
-
     await Promise.all(
-      map(restaurantId, async(restaurantId)=>{
-        const response2=await getDocumentById("restaurants",restaurantId)
-        if(response2.statusResponse){
-           result.favorites.push(response2.document)
+      map(response.docs, async(doc)=>{
+        const favorite=doc.data()
+        const responseRestaurant=await getDocumentById("restaurants",favorite.idRestaurant)
+        if(responseRestaurant.statusResponse){
+           result.favorites.push(responseRestaurant.document)
         }
       })
     )
@@ -318,5 +314,43 @@ export const getFavorites=async()=>{
     result.statusResponse=false
     result.error=error
   }
+  return result
+}
+
+export const getTopRestaurants=async(limit)=>{
+  const result={statusResponse:true, error:null, restaurants:[] }
+
+  try{
+    const response= await db
+    .collection("restaurants")
+    .orderBy("rating","desc")
+    .limit(limit)
+    .get()
+     
+    response.forEach((doc)=>{
+      const restaurant=doc.data()
+      restaurant.id=doc.id
+      result.restaurants.push(restaurant)
+    })
+  }
+  catch(error){
+    result.statusResponse=false
+    result.error=error
+  }
+  
+  return result
+}
+
+
+export const searchRestaurants=async(criteria)=>{
+  const result={statusResponse:true, error:null, restaurants:[] }
+  try{
+      result.restaurants=await fireSQL.query(`SELECT * FROM restaurants WHERE name lIKE '${criteria}%'`)
+  }
+  catch(error){
+    result.statusResponse=false
+    result.error=error
+  }
+  
   return result
 }
