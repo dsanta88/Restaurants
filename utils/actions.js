@@ -3,6 +3,7 @@ import * as firebase from 'firebase'
 import 'firebase/firestore'
 import { fileToBlob } from './helpers'
 import { cloneElement } from 'react'
+import { map } from 'lodash'
 
 const db= firebase.firestore(firebaseApp)
 
@@ -247,7 +248,6 @@ export const getRestaurantReviews= async(id) =>{
 }
 
 
-
 export const getIsFavorite=async(idRestaurant)=>{
   const result={statusResponse:true, error:null, isFavorite:false }
 
@@ -287,5 +287,36 @@ export const deleteFavorite=async(idRestaurant)=>{
     result.error=error
   }
 
+  return result
+}
+
+export const getFavorites=async()=>{
+  const result={statusResponse:true, error:null, favorites:[] }
+
+  try{
+    const response= await db
+    .collection("favorites")
+    .where("idUser","==",getCurrentUser().uid)
+    .get()
+
+    const restaurantId=[]
+    response.forEach((doc)=>{
+       const favorite=doc.data()
+       restaurantId.push(favorite.idRestaurant)
+    })
+
+    await Promise.all(
+      map(restaurantId, async(restaurantId)=>{
+        const response2=await getDocumentById("restaurants",restaurantId)
+        if(response2.statusResponse){
+           result.favorites.push(response2.document)
+        }
+      })
+    )
+  }
+  catch(error){
+    result.statusResponse=false
+    result.error=error
+  }
   return result
 }
